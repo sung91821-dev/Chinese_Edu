@@ -1,0 +1,503 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>중국어 표현집</title>
+  <meta name="theme-color" content="#1b1f2a">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@400;600;700&family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --primary: #49bf9d;
+      --accent: #6fc3df;
+      --warn: #e8a87c;
+      --bg: #1b1f2a;
+      --bg2: #242837;
+      --bg3: #2e3141;
+      --text: #c8ccd8;
+      --text-strong: #ffffff;
+      --muted: #8a90a2;
+      --border: rgba(255,255,255,0.08);
+    }
+    html { scroll-behavior: smooth; }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Source Sans 3', 'Noto Sans KR', system-ui, sans-serif;
+      line-height: 1.6;
+      font-size: 16px;
+    }
+    a { color: var(--primary); }
+    .wrap { max-width: 960px; margin: 0 auto; padding: 0 16px; }
+
+    header.hero {
+      padding: 48px 0 24px;
+      text-align: center;
+    }
+    header.hero h1 { color: var(--text-strong); font-size: 2rem; letter-spacing: -0.01em; }
+    header.hero p { color: var(--muted); margin-top: 6px; }
+
+    nav.tabs {
+      position: sticky; top: 0; z-index: 10;
+      background: rgba(27,31,42,0.95);
+      backdrop-filter: blur(6px);
+      border-bottom: 1px solid var(--border);
+    }
+    nav.tabs .wrap { display: flex; gap: 4px; overflow-x: auto; padding-top: 8px; padding-bottom: 8px; }
+    nav.tabs button {
+      flex: 0 0 auto;
+      background: transparent; color: var(--text);
+      border: 1px solid var(--border); border-radius: 999px;
+      padding: 8px 16px; font: inherit; font-weight: 600; cursor: pointer;
+    }
+    nav.tabs button.active { background: var(--primary); color: #fff; border-color: var(--primary); }
+
+    .toolbar {
+      display: flex; flex-wrap: wrap; gap: 8px; align-items: center;
+      margin: 20px 0 8px;
+    }
+    .toolbar input[type=search] {
+      flex: 1 1 220px; min-width: 0;
+      background: var(--bg2); color: var(--text-strong);
+      border: 1px solid var(--border); border-radius: 8px;
+      padding: 10px 12px; font: inherit;
+    }
+    .toggle {
+      display: inline-flex; align-items: center; gap: 6px;
+      background: var(--bg2); border: 1px solid var(--border); border-radius: 8px;
+      padding: 9px 12px; cursor: pointer; user-select: none; font-size: 0.95rem;
+    }
+    .hint { color: var(--muted); font-size: 0.9rem; margin-bottom: 12px; }
+
+    section.panel { display: none; padding-bottom: 64px; }
+    section.panel.active { display: block; }
+
+    .group { margin-top: 28px; }
+    .group h2 {
+      color: var(--text-strong); font-size: 1.2rem;
+      display: flex; align-items: baseline; gap: 8px;
+      border-bottom: 1px solid var(--border); padding-bottom: 6px; margin-bottom: 12px;
+    }
+    .group h2 small { color: var(--muted); font-weight: 400; font-size: 0.9rem; }
+
+    .card {
+      background: var(--bg2); border: 1px solid var(--border); border-radius: 10px;
+      padding: 12px 14px; margin-bottom: 8px;
+      display: flex; gap: 12px; align-items: flex-start;
+    }
+    .card .body { flex: 1; min-width: 0; }
+    .en { color: var(--text-strong); font-size: 1.05rem; font-weight: 600; }
+    .py { color: var(--primary); font-size: 0.92rem; margin-top: 1px; }
+    .ko { color: var(--muted); font-size: 0.95rem; margin-top: 2px; }
+    .note { color: var(--accent); font-size: 0.85rem; margin-top: 4px; }
+    .actions { display: flex; gap: 4px; flex: 0 0 auto; }
+    .iconbtn {
+      background: var(--bg3); color: var(--text); border: 1px solid var(--border);
+      border-radius: 6px; width: 34px; height: 34px; cursor: pointer;
+      display: inline-flex; align-items: center; justify-content: center; font-size: 0.95rem;
+    }
+    .iconbtn:hover { color: var(--primary); border-color: var(--primary); }
+    .iconbtn.on { color: #f5c542; border-color: #f5c542; }
+
+    /* soften pairs */
+    .pair { display: grid; grid-template-columns: 1fr auto 1fr; gap: 10px; align-items: center; }
+    .pair .from { color: var(--warn); text-decoration: line-through; text-decoration-color: rgba(232,168,124,0.5); }
+    .pair .arrow { color: var(--muted); }
+    @media (max-width: 600px) {
+      .pair { grid-template-columns: 1fr; gap: 2px; }
+      .pair .arrow { display: none; }
+      .card { flex-direction: column; }
+      .actions { align-self: flex-end; }
+    }
+
+    /* practice mode: hide English until tapped */
+    body.practice .py { filter: blur(6px); }
+    body.practice .card:has(.en.revealed) .py { filter: none; }
+    body.practice .en { filter: blur(6px); cursor: pointer; transition: filter .15s; }
+    body.practice .en.revealed { filter: none; }
+
+    /* forms */
+    form.add {
+      display: grid; grid-template-columns: 1fr 1fr 1fr 1fr auto; gap: 8px;
+      background: var(--bg2); border: 1px dashed var(--border); border-radius: 10px; padding: 12px;
+      margin-top: 12px;
+    }
+    form.add input {
+      min-width: 0; background: var(--bg); color: var(--text-strong);
+      border: 1px solid var(--border); border-radius: 6px; padding: 8px 10px; font: inherit;
+    }
+    form.add button, .btn {
+      background: var(--primary); color: #fff; border: 0; border-radius: 6px;
+      padding: 8px 14px; font: inherit; font-weight: 600; cursor: pointer;
+    }
+    .btn.ghost { background: var(--bg3); color: var(--text); border: 1px solid var(--border); }
+    @media (max-width: 600px) { form.add { grid-template-columns: 1fr; } }
+
+    textarea.script {
+      width: 100%; min-height: 280px; resize: vertical;
+      background: var(--bg2); color: var(--text-strong);
+      border: 1px solid var(--border); border-radius: 10px; padding: 14px; font: inherit; line-height: 1.7;
+    }
+    .row { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px; align-items: center; }
+    .empty { color: var(--muted); padding: 16px; text-align: center; border: 1px dashed var(--border); border-radius: 10px; }
+    .toast {
+      position: fixed; left: 50%; bottom: 24px; transform: translateX(-50%);
+      background: var(--primary); color: #fff; padding: 8px 16px; border-radius: 999px;
+      opacity: 0; transition: opacity .2s; pointer-events: none; font-weight: 600;
+    }
+    .toast.show { opacity: 1; }
+    footer { color: var(--muted); text-align: center; font-size: 0.85rem; padding: 24px 0 40px; }
+  </style>
+</head>
+<body>
+  <header class="hero">
+    <div class="wrap">
+      <h1>중국어 표현집</h1>
+      <p>기초 표현부터 쉬운 발표 문장, 업무 단어까지 병음과 함께 외우기</p>
+    </div>
+  </header>
+
+  <nav class="tabs">
+    <div class="wrap" role="tablist">
+      <button data-tab="phrases" class="active">기초·발표 문장</button>
+      <button data-tab="soften">공손하게 말하기</button>
+      <button data-tab="vocab">업무 단어</button>
+      <button data-tab="starred">★ 즐겨찾기</button>
+      <button data-tab="script">작문 연습</button>
+    </div>
+  </nav>
+
+  <main class="wrap">
+    <div class="toolbar">
+      <input type="search" id="q" placeholder="중국어, 병음, 한국어로 검색 (예: nihao, 감사)" />
+      <label class="toggle"><input type="checkbox" id="practice" /> 연습 모드</label>
+    </div>
+    <p class="hint">🔊 발음 듣기 · 📋 복사 · ☆ 즐겨찾기. 연습 모드에서는 중국어가 가려지고, 한국어를 보고 말해본 뒤 눌러서 확인할 수 있어요.</p>
+
+    <section class="panel active" id="panel-phrases"></section>
+    <section class="panel" id="panel-soften"></section>
+    <section class="panel" id="panel-vocab"></section>
+    <section class="panel" id="panel-starred"></section>
+    <section class="panel" id="panel-script">
+      <div class="group">
+        <h2>작문 연습 <small>이 브라우저에 자동 저장돼요</small></h2>
+        <textarea class="script" id="scriptText" placeholder="大家好！我叫…"></textarea>
+        <div class="row">
+          <button class="btn" id="readScript">🔊 원고 읽어주기</button>
+          <button class="btn ghost" id="stopScript">■ 멈추기</button>
+          <label class="toggle">속도
+            <select id="rate" style="background:transparent;color:inherit;border:0;font:inherit">
+              <option value="0.8">느리게</option>
+              <option value="0.95" selected>보통</option>
+              <option value="1.1">빠르게</option>
+            </select>
+          </label>
+          <span class="hint" id="wordCount" style="margin:0"></span>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>Chinese_Edu · 내가 추가한 단어, 즐겨찾기, 원고는 이 기기의 브라우저에만 저장됩니다.</footer>
+  <div class="toast" id="toast">복사했어요</div>
+
+<script>
+/* ───────────── 데이터 ───────────── */
+// 배우는 단계용: 기초 표현 → 자기소개 → 쉬운 발표 문장. py = 병음
+const PHRASES = [
+  { title: '인사·기본 표현', sub: '基本用语', items: [
+    { en: "你好！", py: "Nǐ hǎo!", ko: "안녕하세요!" },
+    { en: "大家好！", py: "Dàjiā hǎo!", ko: "여러분 안녕하세요!", note: "발표 시작할 때 첫마디" },
+    { en: "谢谢。", py: "Xièxie.", ko: "감사합니다." },
+    { en: "不客气。", py: "Bú kèqi.", ko: "천만에요." },
+    { en: "对不起。", py: "Duìbuqǐ.", ko: "죄송합니다." },
+    { en: "没关系。", py: "Méi guānxi.", ko: "괜찮아요." },
+    { en: "请问……", py: "Qǐngwèn……", ko: "실례지만, 여쭤볼게요…", note: "질문을 시작할 때" },
+    { en: "初次见面，请多关照。", py: "Chūcì jiànmiàn, qǐng duō guānzhào.", ko: "처음 뵙겠습니다, 잘 부탁드립니다." },
+    { en: "很高兴认识您。", py: "Hěn gāoxìng rènshi nín.", ko: "만나서 반갑습니다.", note: "您(nín)은 你(nǐ)의 높임말" },
+    { en: "再见！", py: "Zàijiàn!", ko: "안녕히 계세요 / 또 봬요!" },
+  ]},
+  { title: '자기소개·회사소개', sub: '自我介绍', items: [
+    { en: "我叫___。", py: "Wǒ jiào ___.", ko: "제 이름은 ___입니다." },
+    { en: "我是韩国人。", py: "Wǒ shì Hánguó rén.", ko: "저는 한국 사람입니다." },
+    { en: "我在菲尼克斯电气工作。", py: "Wǒ zài Fēiníkèsī Diànqì gōngzuò.", ko: "저는 피닉스컨택트에서 일합니다.", note: "菲尼克斯电气 = Phoenix Contact의 중국어 이름" },
+    { en: "我在自动化事业部工作。", py: "Wǒ zài zìdònghuà shìyèbù gōngzuò.", ko: "저는 오토메이션 사업부에서 일합니다." },
+    { en: "我负责PLC和工业网络产品。", py: "Wǒ fùzé PLC hé gōngyè wǎngluò chǎnpǐn.", ko: "저는 PLC와 산업용 네트워크 제품을 담당합니다." },
+    { en: "我的中文不太好，请多包涵。", py: "Wǒ de Zhōngwén bú tài hǎo, qǐng duō bāohan.", ko: "중국어가 서툴러요, 너그럽게 봐주세요.", note: "발표 전에 한마디 하면 분위기가 부드러워져요" },
+    { en: "我正在学习中文。", py: "Wǒ zhèngzài xuéxí Zhōngwén.", ko: "저는 중국어를 배우는 중입니다." },
+  ]},
+  { title: '발표 시작·진행', sub: '开始和进行', items: [
+    { en: "今天我想介绍一下___。", py: "Jīntiān wǒ xiǎng jièshào yíxià ___.", ko: "오늘은 ___을 소개하려고 합니다." },
+    { en: "我的报告分为三个部分。", py: "Wǒ de bàogào fēn wéi sān ge bùfen.", ko: "제 발표는 세 부분으로 나뉩니다." },
+    { en: "首先……，然后……，最后……", py: "Shǒuxiān……, ránhòu……, zuìhòu……", ko: "먼저…, 그다음에…, 마지막으로…" },
+    { en: "请看这张图。", py: "Qǐng kàn zhè zhāng tú.", ko: "이 그림(그래프)을 봐주세요." },
+    { en: "下面我们来看___。", py: "Xiàmiàn wǒmen lái kàn ___.", ko: "다음으로 ___을 보겠습니다." },
+    { en: "这个很重要。", py: "Zhège hěn zhòngyào.", ko: "이건 아주 중요합니다." },
+    { en: "比如说，___。", py: "Bǐrú shuō, ___.", ko: "예를 들면, ___." },
+    { en: "这个产品的优点是___。", py: "Zhège chǎnpǐn de yōudiǎn shì ___.", ko: "이 제품의 장점은 ___입니다." },
+  ]},
+  { title: '질문·마무리', sub: '提问和结束', items: [
+    { en: "大家有什么问题吗？", py: "Dàjiā yǒu shénme wèntí ma?", ko: "질문 있으신가요?" },
+    { en: "请再说一遍。", py: "Qǐng zài shuō yí biàn.", ko: "한 번 더 말씀해 주세요." },
+    { en: "请说慢一点。", py: "Qǐng shuō màn yìdiǎn.", ko: "조금 천천히 말씀해 주세요." },
+    { en: "我不太明白。", py: "Wǒ bú tài míngbai.", ko: "잘 이해하지 못했어요." },
+    { en: "我稍后用邮件回复您。", py: "Wǒ shāohòu yòng yóujiàn huífù nín.", ko: "나중에 메일로 답변드리겠습니다." },
+    { en: "总结一下，___。", py: "Zǒngjié yíxià, ___.", ko: "정리하자면, ___." },
+    { en: "谢谢大家！", py: "Xièxie dàjiā!", ko: "여러분 감사합니다!" },
+  ]},
+  { title: '숫자·단위', sub: '数字', items: [
+    { en: "一、二、三、四、五", py: "yī, èr, sān, sì, wǔ", ko: "1, 2, 3, 4, 5" },
+    { en: "六、七、八、九、十", py: "liù, qī, bā, jiǔ, shí", ko: "6, 7, 8, 9, 10" },
+    { en: "百 / 千 / 万", py: "bǎi / qiān / wàn", ko: "백 / 천 / 만" },
+    { en: "百分之二十", py: "bǎi fēn zhī èrshí", ko: "20퍼센트", note: "백분의 이십 → 20%" },
+    { en: "增加了百分之十。", py: "Zēngjiā le bǎi fēn zhī shí.", ko: "10% 증가했습니다." },
+  ]},
+];
+
+const SOFTEN = [
+  { title: '공손하게 부탁하기', sub: '礼貌请求', items: [
+    { from: "你看。", en: "请您看一下。", py: "Qǐng nín kàn yíxià.", ko: "한번 봐주세요.", note: "请 + 您 + 동사 + 一下 = 아주 공손한 부탁" },
+    { from: "你说。", en: "请您说一下。", py: "Qǐng nín shuō yíxià.", ko: "말씀해 주세요." },
+    { from: "给我文件。", en: "能不能把文件发给我？", py: "Néng bu néng bǎ wénjiàn fā gěi wǒ?", ko: "파일을 보내주실 수 있을까요?" },
+    { from: "等一下。", en: "请稍等一下。", py: "Qǐng shāo děng yíxià.", ko: "잠시만 기다려 주세요." },
+    { from: "帮我。", en: "麻烦您帮我一下。", py: "Máfan nín bāng wǒ yíxià.", ko: "번거롭겠지만 좀 도와주세요." },
+  ]},
+  { title: '부드럽게 의견 말하기', sub: '委婉表达', items: [
+    { from: "不对。", en: "我觉得可能有点问题。", py: "Wǒ juéde kěnéng yǒudiǎn wèntí.", ko: "제 생각엔 조금 문제가 있을 수도 있어요." },
+    { from: "不行。", en: "这个可能有点难。", py: "Zhège kěnéng yǒudiǎn nán.", ko: "이건 조금 어려울 것 같아요." },
+    { from: "你应该……", en: "我建议……", py: "Wǒ jiànyì……", ko: "제안드리자면…" },
+    { from: "我不知道。", en: "我确认一下再告诉您。", py: "Wǒ quèrèn yíxià zài gàosu nín.", ko: "확인해 보고 다시 말씀드릴게요." },
+  ]},
+  { title: '말을 부드럽게 만드는 말', sub: '小词', items: [
+    { from: "", en: "一下", py: "yíxià", ko: "좀, 한번 (동사 뒤에 붙여 가볍게)", note: "看一下 = 좀 보다" },
+    { from: "", en: "请", py: "qǐng", ko: "~해 주세요 (문장 앞)", note: "请坐 = 앉으세요" },
+    { from: "", en: "您", py: "nín", ko: "당신 (你의 높임말)", note: "고객이나 윗사람에게는 您" },
+    { from: "", en: "我觉得", py: "wǒ juéde", ko: "제 생각에는", note: "我觉得这个方案很好。" },
+    { from: "", en: "可能", py: "kěnéng", ko: "아마, ~일 수도 있다", note: "可能会延迟。 = 늦어질 수도 있어요." },
+    { from: "", en: "有点儿", py: "yǒudiǎnr", ko: "조금 (부정적인 말을 약하게)", note: "有点儿贵 = 조금 비싸요" },
+  ]},
+];
+
+const VOCAB_BASE = [
+  { title: '회사·업무', sub: '工作', items: [
+    { en: "公司", py: "gōngsī", ko: "회사", note: "我们公司 = 우리 회사" },
+    { en: "产品", py: "chǎnpǐn", ko: "제품", note: "这是我们的新产品。" },
+    { en: "客户", py: "kèhù", ko: "고객", note: "客户很满意。 = 고객이 만족했어요." },
+    { en: "会议", py: "huìyì", ko: "회의" },
+    { en: "报告", py: "bàogào", ko: "발표, 보고" },
+    { en: "价格", py: "jiàgé", ko: "가격" },
+    { en: "质量", py: "zhìliàng", ko: "품질", note: "质量很好。" },
+    { en: "交货期", py: "jiāohuòqī", ko: "납기" },
+    { en: "解决方案", py: "jiějué fāng'àn", ko: "솔루션, 해결 방안" },
+    { en: "技术支持", py: "jìshù zhīchí", ko: "기술 지원" },
+  ]},
+  { title: '자동화 제품', sub: '自动化产品', items: [
+    { en: "自动化", py: "zìdònghuà", ko: "자동화" },
+    { en: "控制器", py: "kòngzhìqì", ko: "제어기, 컨트롤러", note: "PLC는 그대로 PLC라고도 해요" },
+    { en: "交换机", py: "jiāohuànjī", ko: "스위치 (네트워크)", note: "工业交换机 = 산업용 스위치" },
+    { en: "继电器", py: "jìdiànqì", ko: "릴레이" },
+    { en: "信号调理器", py: "xìnhào tiáolǐqì", ko: "신호변환기" },
+    { en: "网络", py: "wǎngluò", ko: "네트워크" },
+    { en: "网络安全", py: "wǎngluò ānquán", ko: "사이버 보안", note: "mGuard를 소개할 때" },
+    { en: "防火墙", py: "fánghuǒqiáng", ko: "방화벽" },
+    { en: "传感器", py: "chuángǎnqì", ko: "센서" },
+    { en: "控制柜", py: "kòngzhìguì", ko: "제어반" },
+  ]},
+  { title: '장점 말하기', sub: '优点', items: [
+    { en: "可靠", py: "kěkào", ko: "믿을 수 있는, 신뢰성 있는", note: "我们的产品非常可靠。" },
+    { en: "安全", py: "ānquán", ko: "안전한" },
+    { en: "简单", py: "jiǎndān", ko: "간단한", note: "安装很简单。 = 설치가 간단해요." },
+    { en: "节省空间", py: "jiéshěng kōngjiān", ko: "공간 절약" },
+    { en: "提高效率", py: "tígāo xiàolǜ", ko: "효율을 높이다" },
+    { en: "降低成本", py: "jiàngdī chéngběn", ko: "비용을 줄이다" },
+    { en: "智能工厂", py: "zhìnéng gōngchǎng", ko: "스마트 팩토리" },
+  ]},
+];
+
+/* ───────────── 저장소 (이 브라우저에만) ───────────── */
+const store = {
+  get(k, d) { try { const v = localStorage.getItem(k); return v ? JSON.parse(v) : d; } catch { return d; } },
+  set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch {} },
+};
+let myWords = store.get('zh.myWords', []);
+let stars = new Set(store.get('zh.stars', []));
+
+/* ───────────── 렌더링 ───────────── */
+const norm = s => String(s).normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
+const esc = s => String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const keyOf = it => it.en;
+
+function cardHTML(it, opts = {}) {
+  const starred = stars.has(keyOf(it));
+  const main = it.from
+    ? `<div class="pair"><div class="from">${esc(it.from)}</div><div class="arrow">→</div><div class="en">${esc(it.en)}</div></div>`
+    : `<div class="en">${esc(it.en)}</div>`;
+  return `<div class="card" data-search="${esc(norm(it.en + ' ' + (it.py||'') + ' ' + it.ko + ' ' + (it.from||'') + ' ' + (it.note||'')))}">
+    <div class="body">${main}
+      ${it.py ? `<div class="py">${esc(it.py)}</div>` : ''}
+      <div class="ko">${esc(it.ko)}</div>
+      ${it.note ? `<div class="note">${esc(it.note)}</div>` : ''}
+    </div>
+    <div class="actions">
+      <button class="iconbtn" data-act="say" data-text="${esc(it.en)}" title="발음 듣기">🔊</button>
+      <button class="iconbtn" data-act="copy" data-text="${esc(it.en)}" title="복사">📋</button>
+      <button class="iconbtn ${starred ? 'on' : ''}" data-act="star" data-key="${esc(keyOf(it))}" title="즐겨찾기">${starred ? '★' : '☆'}</button>
+      ${opts.deletable ? `<button class="iconbtn" data-act="del" data-key="${esc(it.en)}" title="삭제">✕</button>` : ''}
+    </div>
+  </div>`;
+}
+
+function groupsHTML(groups, opts) {
+  return groups.map(g => `<div class="group"><h2>${esc(g.title)} <small>${esc(g.sub || '')}</small></h2>
+    ${g.items.length ? g.items.map(it => cardHTML(it, opts)).join('') : `<div class="empty">${esc(g.empty || '')}</div>`}
+  </div>`).join('');
+}
+
+function render() {
+  document.getElementById('panel-phrases').innerHTML = groupsHTML(PHRASES);
+  document.getElementById('panel-soften').innerHTML = groupsHTML(SOFTEN);
+
+  document.getElementById('panel-vocab').innerHTML =
+    `<div class="group"><h2>내 단어 <small>My words</small></h2>
+      ${myWords.length ? myWords.map(it => cardHTML(it, { deletable: true })).join('') : '<div class="empty">아직 추가한 단어가 없어요. 아래에서 업무에 쓰는 단어를 추가해 보세요.</div>'}
+      <form class="add" id="addForm">
+        <input name="en" placeholder="중국어 (예: 质量)" required />
+        <input name="ko" placeholder="뜻 (예: 품질)" required />
+        <input name="py" placeholder="병음 (예: zhìliàng)" />
+        <input name="note" placeholder="예문이나 메모 (선택)" />
+        <button type="submit">추가</button>
+      </form>
+      <div class="row">
+        <button class="btn ghost" id="exportWords">내 단어 내보내기</button>
+        <label class="btn ghost" style="cursor:pointer">불러오기<input type="file" id="importWords" accept=".json" hidden></label>
+      </div>
+    </div>` + groupsHTML(VOCAB_BASE);
+
+  const all = [...PHRASES, ...SOFTEN, ...VOCAB_BASE].flatMap(g => g.items).concat(myWords);
+  const starredItems = all.filter((it, i, arr) => stars.has(keyOf(it)) && arr.findIndex(x => keyOf(x) === keyOf(it)) === i);
+  document.getElementById('panel-starred').innerHTML = groupsHTML([{ title: '즐겨찾기', sub: '발표 전에 빠르게 훑어보기', items: starredItems, empty: '☆를 눌러 자주 볼 문장을 모아두세요.' }]);
+
+  applySearch();
+  bindVocabForm();
+}
+
+function bindVocabForm() {
+  const f = document.getElementById('addForm');
+  f.onsubmit = e => {
+    e.preventDefault();
+    const d = Object.fromEntries(new FormData(f));
+    const item = { en: d.en.trim(), ko: d.ko.trim() };
+    if (d.py && d.py.trim()) item.py = d.py.trim();
+    if (d.note.trim()) item.note = d.note.trim();
+    if (!item.en || !item.ko) return;
+    myWords = myWords.filter(w => w.en !== item.en).concat(item);
+    store.set('zh.myWords', myWords);
+    render();
+    document.querySelector('#addForm input[name=en]').focus();
+  };
+  document.getElementById('exportWords').onclick = () => {
+    const blob = new Blob([JSON.stringify(myWords, null, 2)], { type: 'application/json' });
+    const a = Object.assign(document.createElement('a'), { href: URL.createObjectURL(blob), download: 'my-words.json' });
+    a.click(); URL.revokeObjectURL(a.href);
+  };
+  document.getElementById('importWords').onchange = async e => {
+    const file = e.target.files[0]; if (!file) return;
+    try {
+      const list = JSON.parse(await file.text());
+      if (!Array.isArray(list)) throw 0;
+      const map = new Map(myWords.map(w => [w.en, w]));
+      list.filter(w => w && w.en && w.ko).forEach(w => map.set(w.en, { en: String(w.en), ko: String(w.ko), ...(w.py ? { py: String(w.py) } : {}), ...(w.note ? { note: String(w.note) } : {}) }));
+      myWords = [...map.values()]; store.set('zh.myWords', myWords); render(); toast('불러왔어요');
+    } catch { toast('파일 형식이 맞지 않아요'); }
+  };
+}
+
+/* ───────────── 검색 ───────────── */
+function applySearch() {
+  const q = norm(document.getElementById('q').value.trim()), qs = q.replace(/\s+/g, '');
+  document.querySelectorAll('section.panel .group').forEach(g => {
+    let shown = 0;
+    g.querySelectorAll('.card').forEach(c => {
+      const hit = !q || c.dataset.search.includes(q) || c.dataset.search.replace(/\s+/g, '').includes(qs);
+      c.style.display = hit ? '' : 'none';
+      if (hit) shown++;
+    });
+    const hasCards = g.querySelector('.card');
+    g.style.display = (!q || !hasCards || shown) ? '' : 'none';
+  });
+}
+document.getElementById('q').addEventListener('input', applySearch);
+
+/* ───────────── 탭 ───────────── */
+function showTab(name) {
+  document.querySelectorAll('nav.tabs button').forEach(b => b.classList.toggle('active', b.dataset.tab === name));
+  document.querySelectorAll('section.panel').forEach(p => p.classList.toggle('active', p.id === 'panel-' + name));
+  store.set('zh.tab', name);
+}
+document.querySelectorAll('nav.tabs button').forEach(b => b.addEventListener('click', () => showTab(b.dataset.tab)));
+
+/* ───────────── 버튼 동작 ───────────── */
+function speak(text, rate = 0.95) {
+  if (!('speechSynthesis' in window)) { toast('이 브라우저는 음성 읽기를 지원하지 않아요'); return; }
+  speechSynthesis.cancel();
+  const u = new SpeechSynthesisUtterance(text.replace(/_+/g, ' '));
+  u.lang = 'zh-CN'; u.rate = rate;
+  const v = speechSynthesis.getVoices().find(v => v.lang.replace('_','-') === 'zh-CN');
+  if (v) u.voice = v;
+  speechSynthesis.speak(u);
+}
+let toastTimer;
+function toast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.classList.add('show');
+  clearTimeout(toastTimer); toastTimer = setTimeout(() => t.classList.remove('show'), 1400);
+}
+
+document.addEventListener('click', async e => {
+  const en = e.target.closest('.en');
+  if (en && document.body.classList.contains('practice')) { en.classList.toggle('revealed'); return; }
+  const b = e.target.closest('[data-act]');
+  if (!b) return;
+  const act = b.dataset.act;
+  if (act === 'say') speak(b.dataset.text);
+  if (act === 'copy') {
+    try { await navigator.clipboard.writeText(b.dataset.text); toast('복사했어요'); } catch { toast('복사하지 못했어요'); }
+  }
+  if (act === 'star') {
+    const k = b.dataset.key;
+    stars.has(k) ? stars.delete(k) : stars.add(k);
+    store.set('zh.stars', [...stars]); render();
+  }
+  if (act === 'del') {
+    myWords = myWords.filter(w => w.en !== b.dataset.key);
+    store.set('zh.myWords', myWords); render();
+  }
+});
+
+const practice = document.getElementById('practice');
+practice.addEventListener('change', () => {
+  document.body.classList.toggle('practice', practice.checked);
+  document.querySelectorAll('.en.revealed').forEach(el => el.classList.remove('revealed'));
+});
+
+/* ───────────── 원고 ───────────── */
+const scriptEl = document.getElementById('scriptText');
+const wc = document.getElementById('wordCount');
+function updateCount() {
+  const words = scriptEl.value.replace(/[\s，。！？、,.!?]/g, '').length;
+  // 발표 속도 약 200자/분 기준
+  wc.textContent = words ? `${words}자 · 약 ${Math.max(1, Math.round(words / 200))}분` : '';
+}
+scriptEl.value = store.get('zh.script', '');
+updateCount();
+scriptEl.addEventListener('input', () => { store.set('zh.script', scriptEl.value); updateCount(); });
+document.getElementById('readScript').onclick = () => scriptEl.value.trim() && speak(scriptEl.value, parseFloat(document.getElementById('rate').value));
+document.getElementById('stopScript').onclick = () => 'speechSynthesis' in window && speechSynthesis.cancel();
+
+render();
+showTab(store.get('zh.tab', 'phrases'));
+</script>
+</body>
+</html>
